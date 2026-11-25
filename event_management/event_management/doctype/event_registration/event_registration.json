@@ -1,0 +1,170 @@
+{
+ "actions": [],
+ "allow_bulk_edit": 1,
+ "allow_rename": 1,
+ "creation": "2026-11-16 14:24:32.230604",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "event",
+  "attendee",
+  "ticket_type",
+  "registration_status",
+  "ticket_price",
+  "total_amount",
+  "checkin_time",
+  "qr_code",
+  "column_break_nekp",
+  "payment_status",
+  "addon_amount",
+  "qr_code_token",
+  "attendee_email",
+  "section_break_zapf",
+  "addons",
+  "ticket_email_sent",
+  "amended_from"
+ ],
+ "fields": [
+  {
+   "fieldname": "event",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Event",
+   "options": "Managed event",
+   "reqd": 1
+  },
+  {
+   "fieldname": "attendee",
+   "fieldtype": "Link",
+   "label": "Attendee",
+   "options": "Event Attendee",
+   "reqd": 1
+  },
+  {
+   "fieldname": "ticket_type",
+   "fieldtype": "Link",
+   "label": "Ticket Type",
+   "options": "Event Ticket Type",
+   "reqd": 1
+  },
+  {
+   "allow_on_submit": 1,
+   "default": "Pending",
+   "fieldname": "registration_status",
+   "fieldtype": "Select",
+   "label": "Registration Status",
+   "options": "Pending\nConfirmed\nCancelled\nChecked In",
+   "reqd": 1
+  },
+  {
+   "default": "Pending",
+   "fieldname": "payment_status",
+   "fieldtype": "Select",
+   "label": "Payment Status",
+   "options": "Pending\nPaid\nFailed\nRefunded",
+   "reqd": 1
+  },
+  {
+   "fieldname": "ticket_price",
+   "fieldtype": "Currency",
+   "label": "Ticket Price",
+   "read_only": 1
+  },
+  {
+   "fieldname": "addon_amount",
+   "fieldtype": "Currency",
+   "label": "Add on Amount",
+   "read_only": 1
+  },
+  {
+   "fieldname": "total_amount",
+   "fieldtype": "Currency",
+   "label": "Total Amount",
+   "read_only": 1
+  },
+  {
+   "fieldname": "qr_code_token",
+   "fieldtype": "Data",
+   "label": "QR Code Token",
+   "read_only": 1
+  },
+  {
+   "fieldname": "checkin_time",
+   "fieldtype": "Datetime",
+   "label": "Check-in Time",
+   "read_only": 1
+  },
+  {
+   "fieldname": "section_break_zapf",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "addons",
+   "fieldtype": "Table",
+   "label": "Add-ons",
+   "options": "Event Registration Add-on"
+  },
+  {
+   "fieldname": "qr_code",
+   "fieldtype": "Attach Image",
+   "label": "QR Code"
+  },
+  {
+   "fieldname": "column_break_nekp",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "0",
+   "fieldname": "ticket_email_sent",
+   "fieldtype": "Check",
+   "label": "Ticket Email Sent",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "attendee.attendee_email",
+   "fieldname": "attendee_email",
+   "fieldtype": "Data",
+   "label": "Attendee email",
+   "options": "Email",
+   "read_only": 1
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Event Registration",
+   "print_hide": 1,
+   "read_only": 1,
+   "search_index": 1
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "is_submittable": 1,
+ "links": [],
+ "modified": "2026-11-25 16:08:25.000817",
+ "modified_by": "Administrator",
+ "module": "Event Management",
+ "name": "Event Registration",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "rows_threshold_for_grid_search": 20,
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": []
+}

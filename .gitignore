@@ -53,3 +53,7 @@ jspm_packages/
 
 # Aider AI Chat
 .aider*
+
+# Built by the frontend
+event_management/public/frontend
+event_management/www/event_management.html
