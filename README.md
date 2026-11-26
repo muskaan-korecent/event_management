@@ -244,14 +244,4 @@ cd apps/event_management/frontend
 npm run dev
 ```
 
-## Running tests
 
-From your bench directory:
-
-```bash
-bench --site your-site-name run-tests --app event_management
-```
-
-## License
-
-MIT. See [license.txt](license.txt).
