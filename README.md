@@ -50,11 +50,19 @@ Organizers set up events, ticket types and add-ons, then keep an eye on registra
 <img width="1288" height="938" alt="image" src="https://github.com/user-attachments/assets/7ffc02bf-0727-4472-9317-4f5532631883" />
 
 
+### Gate staff side
+
+**Gate Scanner** – staff scan a ticket's QR code or check someone in manually.
+
+<!-- add Gate Scanner screenshot here -->
+
+
 ## What it does
 
 - Create and publish events
 - Set up multiple ticket types with their own prices and capacity
 - Offer optional add-ons (lunch, t-shirts, etc.) with prices and stock limits
+- Save attendee details (name, email, phone) when someone registers
 - Register attendees and work out the total automatically
 - Generate a unique QR code for every registration
 - View, print and download tickets
@@ -62,12 +70,12 @@ Organizers set up events, ticket types and add-ons, then keep an eye on registra
 - Check ticket capacity and add-on stock at booking time
 - Show organizers a dashboard with registration and revenue numbers
 - Show check-in reports and export attendee details as CSV
-- Check people in by scanning a QR code or searching manually
+- Check people in by scanning a QR code or manually
 - Block duplicate check-ins
 
 ## DocTypes
 
-The backend is built around five DocTypes.
+The backend is built around six DocTypes.
 
 ### 1. Managed Event
 
@@ -97,6 +105,7 @@ Optional extras attendees can pick while booking.
 - Linked event
 - Price
 - Available stock
+
 ### 4. Event Attendee
 
 The attendee profile created when someone registers on the Register page.
@@ -106,7 +115,6 @@ The attendee profile created when someone registers on the Register page.
 - Phone number
 
 This profile is what the browser's attendee ID and access token refer to when attendees view their registrations.
-
 
 ### 5. Event Registration
 
@@ -121,7 +129,7 @@ One record per booking.
 
 Each registration gets its own QR token, which is what gets verified at the gate.
 
-### 5. Event Registration Add-on
+### 6. Event Registration Add-on
 
 A child table inside Event Registration. It holds the add-ons the attendee picked, along with their details and amounts.
 
@@ -146,12 +154,104 @@ The Vue app is served under `/event_management`.
 |---|---|---|
 | Organizer Dashboard | `/event_management/dashboard` | Totals, registrations, revenue and monthly trends |
 | Check-in Report | `/event_management/checkin-report` | Attendance details and CSV export |
-| Gate Scanner | `/event_management/gate-scanner` | Scan QR tickets and check people in |
+| Gate Scanner | `/event_management/gate-scanner` | Scan QR tickets or check people in manually |
 
-The dashboard and check-in report need a Frappe login, and the dashboard only shows events assigned to the logged-in organizer. The gate scanner needs the **Gate Staff** role.
+The dashboard and check-in report need a Frappe login, and the dashboard only shows events assigned to the logged-in organizer.
+
+## Gate Scanner
+
+The gate scanner is for staff at the entrance, and it needs the **Gate Staff** role. There are two ways to check someone in:
+
+- **QR scan:** scan the QR code on the attendee's ticket (powered by `html5-qrcode`).
+- **Manual check-in:** if a QR code won't scan, or the attendee can't show their ticket, search for their registration and check them in by hand.
+
+Either way, the system verifies the registration and records the check-in. If the ticket has already been used, the second check-in is blocked. Checked-in attendees then show up in the organizer's Check-in Report.
 
 ## How attendee access works
 
 Attendees give their name, email and phone number before booking. The app then stores an attendee profile, attendee ID, email and a signed access token in the browser.
 
-My Registrations uses that saved ID and token to fetch bookings, so attendees don't need a Frappe account. The backend verifies the token and returns the registrations linked to that attendee profile, and
+My Registrations uses that saved ID and token to fetch bookings, so attendees don't need a Frappe account. The backend verifies the token and returns the registrations linked to that attendee profile, and the frontend also checks the email against the one saved in the browser.
+
+If someone is logged in to Frappe, there's a separate path: their registrations are found by matching their account email to the attendee email.
+
+## Booking and check-in flow
+
+1. The organizer creates an event in Frappe Desk.
+2. Ticket types and optional add-ons are set up for it.
+3. An attendee browses the published events.
+4. They pick a ticket and any add-ons.
+5. The system checks ticket capacity and add-on stock.
+6. The registration is created and the total is calculated.
+7. A unique QR code is generated.
+8. The attendee opens their ticket from My Registrations.
+9. At the event, gate staff scan the QR code or check the attendee in manually.
+10. The system verifies the ticket and stops duplicate check-ins.
+
+Attendees can cancel an eligible registration any time before the event starts, as long as they haven't already checked in.
+
+## Payments
+
+Registrations have a payment status field, but **Razorpay is not integrated yet**. Online payments and payment verification are still on the to-do list, which is why every booking currently shows "Pending".
+
+## Tech stack
+
+**Backend:** Frappe Framework v16, Python, MariaDB
+
+**Frontend:** Vue 3, TypeScript, Vite, Frappe UI
+
+**Other:** `html5-qrcode` for scanning, Git and GitHub
+
+## Installation
+
+You'll need a working Frappe Bench v16 setup. From your bench directory, run:
+
+```bash
+bench get-app https://github.com/muskaan-korecent/event_management.git --branch version-16
+
+bench --site your-site-name install-app event_management
+```
+
+Swap `your-site-name` for your own site name.
+
+## Running locally
+
+Install the frontend dependencies:
+
+```bash
+cd apps/event_management/frontend
+npm install
+```
+
+Go back to the bench directory:
+
+```bash
+cd ../..
+```
+
+Start the dev server:
+
+```bash
+bench start
+```
+
+The app will be available at `/event_management`.
+
+If you'd rather run the Vite dev server on its own:
+
+```bash
+cd apps/event_management/frontend
+npm run dev
+```
+
+## Running tests
+
+From your bench directory:
+
+```bash
+bench --site your-site-name run-tests --app event_management
+```
+
+## License
+
+MIT. See [license.txt](license.txt).
