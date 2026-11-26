@@ -194,54 +194,6 @@ Attendees can cancel an eligible registration any time before the event starts, 
 
 Registrations have a payment status field, but **Razorpay is not integrated yet**. Online payments and payment verification are still on the to-do list, which is why every booking currently shows "Pending".
 
-## Tech stack
 
-**Backend:** Frappe Framework v16, Python, MariaDB
-
-**Frontend:** Vue 3, TypeScript, Vite, Frappe UI
-
-**Other:** `html5-qrcode` for scanning, Git and GitHub
-
-## Installation
-
-You'll need a working Frappe Bench v16 setup. From your bench directory, run:
-
-```bash
-bench get-app https://github.com/muskaan-korecent/event_management.git --branch version-16
-
-bench --site your-site-name install-app event_management
-```
-
-Swap `your-site-name` for your own site name.
-
-## Running locally
-
-Install the frontend dependencies:
-
-```bash
-cd apps/event_management/frontend
-npm install
-```
-
-Go back to the bench directory:
-
-```bash
-cd ../..
-```
-
-Start the dev server:
-
-```bash
-bench start
-```
-
-The app will be available at `/event_management`.
-
-If you'd rather run the Vite dev server on its own:
-
-```bash
-cd apps/event_management/frontend
-npm run dev
-```
 
 
