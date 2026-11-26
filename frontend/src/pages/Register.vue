@@ -163,7 +163,7 @@ function submitRegistration() {
           <button class="submit" type="submit" :disabled="registration.loading">
             <span v-if="registration.loading" class="spinner"></span>
             <span v-if="registration.loading">Saving your details...</span>
-            <span v-else>Register and view events &nbsp;→</span>
+            <span v-else>Register/Login and view events &nbsp;→</span>
           </button>
 
           <div class="divider"></div>

@@ -102,21 +102,65 @@ def get_public_event_booking_options(name):
             0,
         )
 
+    addons = frappe.get_all(
+        "Event Add-on",
+        filters={"event": name},
+        fields=[
+            "name",
+            "addon_name",
+            "addon_price",
+            "available_stock",
+            "addon_description",
+        ],
+        order_by="creation asc",
+        limit=100,
+    )
+    addon_names = [addon.name for addon in addons]
+
+    if addon_names:
+        registration_addons = frappe.get_all(
+            "Event Registration Add-on",
+            filters={
+                "addon": ["in", addon_names],
+                "parenttype": "Event Registration",
+                "parentfield": "addons",
+            },
+            fields=["addon", "quantity", "parent"],
+        )
+        registration_names = list(
+            {row.parent for row in registration_addons}
+        )
+        active_registrations = set()
+
+        if registration_names:
+            active_registrations = {
+                row.name
+                for row in frappe.get_all(
+                    "Event Registration",
+                    filters={
+                        "name": ["in", registration_names],
+                        "registration_status": ["!=", "Cancelled"],
+                    },
+                    fields=["name"],
+                )
+            }
+
+        used_stock = {}
+        for row in registration_addons:
+            if row.parent in active_registrations:
+                used_stock[row.addon] = (
+                    used_stock.get(row.addon, 0) + (row.quantity or 0)
+                )
+
+        for addon in addons:
+            addon.available_stock = max(
+                (addon.available_stock or 0) - used_stock.get(addon.name, 0),
+                0,
+            )
+
     return {
         "tickets": tickets,
-        "addons": frappe.get_all(
-            "Event Add-on",
-            filters={"event": name},
-            fields=[
-                "name",
-                "addon_name",
-                "addon_price",
-                "available_stock",
-                "addon_description",
-            ],
-            order_by="creation asc",
-            limit=100,
-        ),
+        "addons": addons,
     }
 
 

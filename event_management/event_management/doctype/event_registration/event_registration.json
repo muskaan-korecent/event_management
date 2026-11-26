@@ -2,6 +2,7 @@
  "actions": [],
  "allow_bulk_edit": 1,
  "allow_rename": 1,
+ "autoname": "event-.###",
  "creation": "2026-11-16 14:24:32.230604",
  "doctype": "DocType",
  "engine": "InnoDB",
@@ -49,7 +50,7 @@
   },
   {
    "allow_on_submit": 1,
-   "default": "Pending",
+   "default": "Confirmed",
    "fieldname": "registration_status",
    "fieldtype": "Select",
    "label": "Registration Status",
@@ -143,10 +144,11 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2026-11-25 16:08:25.000817",
+ "modified": "2026-11-26 10:45:35.525829",
  "modified_by": "Administrator",
  "module": "Event Management",
  "name": "Event Registration",
+ "naming_rule": "Expression",
  "owner": "Administrator",
  "permissions": [
   {
@@ -166,5 +168,6 @@
  "rows_threshold_for_grid_search": 20,
  "sort_field": "creation",
  "sort_order": "DESC",
- "states": []
+ "states": [],
+ "title_field": "event"
 }
