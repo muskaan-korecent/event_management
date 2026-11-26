@@ -15,33 +15,40 @@ Organizers set up events, ticket types and add-ons, then keep an eye on registra
 
 **Upcoming Events** – all published events in one place.
 
-![Events list](screenshots/02-events.png)
+<img width="1400" height="840" alt="image" src="https://github.com/user-attachments/assets/71002512-51bc-4c54-952a-944581c77c98" />
+
 
 **Event Details** – venue, dates, ticket types with live availability, and optional add-ons.
 
-![Event details](screenshots/03-event-details.png)
+<img width="896" height="1359" alt="image" src="https://github.com/user-attachments/assets/95b3e9b3-adc8-424a-aceb-1bc345914331" />
+
 
 **Book a Ticket** – pick a ticket, tick any add-ons, and see the order total update as you go.
 
-![Book a ticket](screenshots/04-book-ticket.png)
+<img width="1096" height="1092" alt="image" src="https://github.com/user-attachments/assets/2a9070bc-2674-4576-b7a5-1875af4c2494" />
+
 
 **Event Pass** – the QR ticket, which can be printed or downloaded.
 
-![QR ticket](screenshots/05-ticket.png)
+<img width="1065" height="1120" alt="image" src="https://github.com/user-attachments/assets/ab4a9b78-4852-4012-98cd-ab71488609d7" />
+
 
 **My Registrations** – every booking in one list, with options to view the ticket or cancel.
 
-![My registrations](screenshots/06-my-registrations.png)
+<img width="1400" height="840" alt="image" src="https://github.com/user-attachments/assets/8e3f13cf-0696-4607-aa38-8c62fa8d75cb" />
+
 
 ### Organizer side
 
 **Organizer Dashboard** – event totals, registrations, check-ins, revenue and monthly trends, plus the latest registrations.
 
-![Organizer dashboard](screenshots/07-dashboard.png)
+<img width="1204" height="1006" alt="image" src="https://github.com/user-attachments/assets/3c30d00d-ebdb-46e3-b08f-60c90b4efdb3" />
+
 
 **Check-in Report** – attendance numbers, a per-event filter, attendee details and CSV export.
 
-![Check-in report](screenshots/08-checkin-report.png)
+<img width="1288" height="938" alt="image" src="https://github.com/user-attachments/assets/7ffc02bf-0727-4472-9317-4f5532631883" />
+
 
 ## What it does
 
