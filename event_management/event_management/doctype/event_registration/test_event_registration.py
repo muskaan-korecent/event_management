@@ -2,7 +2,7 @@
 # Copyright (c) 2026, Muskaan and Contributors
 # See license.txt
 
-from unittest.mock import patch
+from unittest.mock import Mock, patch
 
 import frappe
 from frappe.tests import IntegrationTestCase
@@ -20,9 +20,37 @@ from event_management.event_management.doctype.event_registration.event_registra
     get_my_registrations,
     verify_signed_qr_token,
 )
+from event_management.event_management.doctype.event_registration.api import (
+    register_for_event,
+)
 
 
 class IntegrationTestEventRegistration(IntegrationTestCase):
+
+    def test_register_for_event_submits_registration(self):
+        registration = Mock()
+        registration.name = "TEST-SUBMITTED-REGISTRATION"
+        registration.qr_code_token = "test-qr-token"
+        registration.qr_code = "/files/test-qr.png"
+
+        with patch.object(
+            frappe.db,
+            "exists",
+            return_value="TEST-ATTENDEE",
+        ), patch.object(
+            frappe,
+            "get_doc",
+            return_value=registration,
+        ):
+            result = register_for_event(
+                "TEST-ATTENDEE",
+                "TEST-EVENT",
+                "TEST-TICKET",
+            )
+
+        registration.insert.assert_called_once_with(ignore_permissions=True)
+        registration.submit.assert_called_once_with()
+        self.assertEqual(result["name"], "TEST-SUBMITTED-REGISTRATION")
 
     def test_qr_token_generated_for_paid_confirmed_registration(self):
         registration = frappe.get_doc({

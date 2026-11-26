@@ -22,6 +22,11 @@ const loading = ref(false)
 const message = ref('Click Start Camera to scan tickets.')
 const messageType = ref('info')
 const attendee = ref<AttendeeDetails | null>(null)
+const manualSearchText = ref('')
+const manualSearchLoading = ref(false)
+const manualCheckLoading = ref('')
+const manualResults = ref<any[]>([])
+const manualSearchPerformed = ref(false)
 
 let scanner: Html5Qrcode | null = null
 
@@ -49,6 +54,53 @@ const checkIn = createResource({
   }
 })
 
+const searchAttendees = createResource({
+  url: 'event_management.event_management.doctype.event_registration.event_registration.search_attendees_for_checkin',
+
+  makeParams(params: { search_text: string }) {
+    return params
+  },
+
+  onSuccess(results: any[]) {
+    manualSearchLoading.value = false
+    manualResults.value = results || []
+    manualSearchPerformed.value = true
+  },
+
+  onError(error: any) {
+    manualSearchLoading.value = false
+    manualResults.value = []
+    manualSearchPerformed.value = false
+    message.value =
+      error?.messages?.[0] || 'Unable to search attendees.'
+    messageType.value = 'error'
+  }
+})
+
+const manualCheckIn = createResource({
+  url: 'event_management.event_management.doctype.event_registration.event_registration.manual_checkin',
+
+  makeParams(params: { registration_name: string }) {
+    return params
+  },
+
+  onSuccess(result: string) {
+    manualCheckLoading.value = ''
+    attendee.value = null
+    message.value = result
+    messageType.value = 'success'
+    stopCamera()
+    searchAttendees.submit({ search_text: manualSearchText.value.trim() })
+  },
+
+  onError(error: any) {
+    manualCheckLoading.value = ''
+    message.value =
+      error?.messages?.[0] || 'Manual check-in failed.'
+    messageType.value = 'error'
+  }
+})
+
 async function handleScan(decodedText: string) {
   if (loading.value) return
 
@@ -58,6 +110,31 @@ async function handleScan(decodedText: string) {
   messageType.value = 'info'
 
   await checkIn.submit({ token: decodedText })
+}
+
+async function handleManualSearch() {
+  const searchText = manualSearchText.value.trim()
+  if (searchText.length < 2) {
+    manualResults.value = []
+    manualSearchPerformed.value = false
+    message.value = 'Enter at least 2 characters to search attendees.'
+    messageType.value = 'error'
+    return
+  }
+
+  manualSearchLoading.value = true
+  await searchAttendees.submit({ search_text: searchText })
+}
+
+async function handleManualCheckIn(registrationName: string) {
+  if (manualCheckLoading.value) return
+
+  manualCheckLoading.value = registrationName
+  attendee.value = null
+  message.value = 'Checking in attendee...'
+  messageType.value = 'info'
+
+  await manualCheckIn.submit({ registration_name: registrationName })
 }
 
 async function startCamera() {
@@ -121,6 +198,74 @@ onBeforeUnmount(() => {
       </header>
 
       <section class="camera-section">
+
+        <div class="manual-checkin">
+          <h2>Manual Check-in</h2>
+          <p>Search by attendee name or email.</p>
+
+          <form class="manual-search" @submit.prevent="handleManualSearch">
+            <input
+              v-model="manualSearchText"
+              type="search"
+              placeholder="Attendee name or email"
+              autocomplete="off"
+            >
+            <button
+              type="submit"
+              class="search-button"
+              :disabled="manualSearchLoading || manualSearchText.trim().length < 2"
+            >
+              {{ manualSearchLoading ? 'Searching...' : 'Search' }}
+            </button>
+          </form>
+
+          <div v-if="manualResults.length" class="manual-results">
+            <div
+              v-for="registration in manualResults"
+              :key="registration.name"
+              class="manual-result"
+            >
+              <div class="manual-result-details">
+                <strong>{{ registration.attendee_name || 'Unknown attendee' }}</strong>
+                <span>{{ registration.attendee_email || '-' }}</span>
+                <small>
+                  {{ registration.registration_status }}
+                  · {{ registration.payment_status }}
+                  · {{ registration.name }}
+                </small>
+              </div>
+
+              <button
+                class="manual-check-button"
+                :disabled="
+                  registration.registration_status !== 'Confirmed'
+                  || !!manualCheckLoading
+                "
+                @click="handleManualCheckIn(registration.name)"
+              >
+                {{
+                  manualCheckLoading === registration.name
+                    ? 'Checking in...'
+                    : registration.registration_status === 'Checked In'
+                      ? 'Checked In'
+                      : 'Check In'
+                }}
+              </button>
+            </div>
+          </div>
+          <p
+            v-else-if="manualSearchLoading"
+            class="manual-empty"
+          >
+            Searching...
+          </p>
+          <p
+            v-else-if="manualSearchPerformed"
+            class="manual-empty"
+          >
+            No matching attendees found.
+          </p>
+        </div>
 
         <div class="camera-buttons">
           <button
@@ -260,6 +405,89 @@ onBeforeUnmount(() => {
   margin-bottom: 25px;
 }
 
+.manual-checkin {
+  margin-bottom: 28px;
+  padding: 20px;
+  border: 1px solid #dfe6f2;
+  border-radius: 12px;
+  background: #fbfcff;
+}
+
+.manual-checkin h2 {
+  margin: 0 0 5px;
+  color: #1e2d4d;
+  font-size: 18px;
+}
+
+.manual-checkin p {
+  margin: 0 0 14px;
+  color: #718096;
+  font-size: 13px;
+}
+
+.manual-search {
+  display: flex;
+  gap: 10px;
+}
+
+.manual-search input {
+  min-width: 0;
+  flex: 1;
+  padding: 12px 14px;
+  border: 1px solid #ccd6e5;
+  border-radius: 8px;
+  font-size: 14px;
+}
+
+.search-button,
+.manual-check-button {
+  background: #2864e8;
+  color: white;
+  white-space: nowrap;
+}
+
+.manual-results {
+  display: grid;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.manual-result {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px;
+  border: 1px solid #edf0f4;
+  border-radius: 8px;
+  background: white;
+}
+
+.manual-result-details {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  color: #26344f;
+  font-size: 14px;
+}
+
+.manual-result-details span,
+.manual-result-details small {
+  color: #718096;
+  overflow-wrap: anywhere;
+}
+
+.manual-check-button {
+  padding: 10px 14px;
+  font-size: 13px;
+}
+
+.manual-empty {
+  margin: 14px 0 0 !important;
+  text-align: center;
+}
+
 button {
   padding: 13px 24px;
   border: none;
@@ -395,6 +623,17 @@ button:disabled {
 
   .camera-buttons {
     flex-wrap: wrap;
+  }
+
+  .manual-search,
+  .manual-result {
+    flex-direction: column;
+  }
+
+  .manual-search input,
+  .manual-search button,
+  .manual-check-button {
+    width: 100%;
   }
 
   .detail-row {

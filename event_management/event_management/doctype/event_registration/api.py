@@ -36,6 +36,7 @@ def register_for_event(attendee, event, ticket_type, addons=None):
 		}
 	)
 	registration.insert(ignore_permissions=True)
+	registration.submit()
 
 	if not registration.qr_code:
 		registration.generate_qr_image()
