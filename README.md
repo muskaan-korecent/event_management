@@ -97,8 +97,18 @@ Optional extras attendees can pick while booking.
 - Linked event
 - Price
 - Available stock
+### 4. Event Attendee
 
-### 4. Event Registration
+The attendee profile created when someone registers on the Register page.
+
+- Name
+- Email
+- Phone number
+
+This profile is what the browser's attendee ID and access token refer to when attendees view their registrations.
+
+
+### 5. Event Registration
 
 One record per booking.
 
