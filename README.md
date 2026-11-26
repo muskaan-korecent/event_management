@@ -3,7 +3,7 @@
 
 A quick walkthrough of the full flow: registering, booking a ticket, and checking in at the gate.
 
-
+https://drive.google.com/drive/folders/1NVNF2BSqogLJcGEDy_G8cj33YwppSO-z?usp=drive_link
 
 
 # Event Management Platform
