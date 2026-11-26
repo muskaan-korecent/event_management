@@ -1,3 +1,11 @@
+
+## Demo Video
+
+A quick walkthrough of the full flow: registering, booking a ticket, and checking in at the gate.
+
+
+
+
 # Event Management Platform
 
 A simple event booking app I built on **Frappe Framework v16** with a **Vue 3** frontend.
@@ -193,6 +201,7 @@ Attendees can cancel an eligible registration any time before the event starts, 
 ## Payments
 
 Registrations have a payment status field, but **Razorpay is not integrated yet**. Online payments and payment verification are still on the to-do list, which is why every booking currently shows "Pending".
+
 
 
 
