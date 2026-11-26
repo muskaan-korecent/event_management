@@ -1,216 +1,140 @@
 # Event Management Platform
 
-An event booking application built using **Frappe Framework v16** and **Vue 3**.
+A simple event booking app I built on **Frappe Framework v16** with a **Vue 3** frontend.
 
-Organizers can create events, manage ticket types and add-ons, and monitor registrations. Attendees can browse events, book tickets, view their registrations, and access QR tickets. Gate staff can verify tickets and check in attendees.
+Organizers set up events, ticket types and add-ons, then keep an eye on registrations and revenue. Attendees browse events, book tickets and get a QR ticket. Gate staff scan those QR codes at the door to check people in.
 
-## Features
+## Screenshots
 
-- Create and publish events.
-- Manage different ticket types, prices, and ticket capacity.
-- Add optional event add-ons with prices and stock limits.
-- Register attendees and calculate the total registration amount.
-- Generate a unique QR code for each registration.
-- View, print, and download QR tickets.
-- View and cancel eligible registrations.
-- Check ticket capacity and add-on stock during registration.
-- Provide an organizer dashboard with registration and revenue information.
-- View check-in reports and export attendee details as CSV.
-- Scan QR codes or search manually to check in attendees.
-- Prevent duplicate check-ins.
+### Attendee side
 
-## Frappe DocTypes
+**Register** – attendees start by entering their name, email and phone number.
 
-The backend is organized around the following DocTypes:
+ <img width="1550" height="930" alt="image" src="https://github.com/user-attachments/assets/058b75d9-e392-4d29-9a2f-ac133f6c8538" />
+
+
+**Upcoming Events** – all published events in one place.
+
+![Events list](screenshots/02-events.png)
+
+**Event Details** – venue, dates, ticket types with live availability, and optional add-ons.
+
+![Event details](screenshots/03-event-details.png)
+
+**Book a Ticket** – pick a ticket, tick any add-ons, and see the order total update as you go.
+
+![Book a ticket](screenshots/04-book-ticket.png)
+
+**Event Pass** – the QR ticket, which can be printed or downloaded.
+
+![QR ticket](screenshots/05-ticket.png)
+
+**My Registrations** – every booking in one list, with options to view the ticket or cancel.
+
+![My registrations](screenshots/06-my-registrations.png)
+
+### Organizer side
+
+**Organizer Dashboard** – event totals, registrations, check-ins, revenue and monthly trends, plus the latest registrations.
+
+![Organizer dashboard](screenshots/07-dashboard.png)
+
+**Check-in Report** – attendance numbers, a per-event filter, attendee details and CSV export.
+
+![Check-in report](screenshots/08-checkin-report.png)
+
+## What it does
+
+- Create and publish events
+- Set up multiple ticket types with their own prices and capacity
+- Offer optional add-ons (lunch, t-shirts, etc.) with prices and stock limits
+- Register attendees and work out the total automatically
+- Generate a unique QR code for every registration
+- View, print and download tickets
+- Let attendees view and cancel eligible bookings
+- Check ticket capacity and add-on stock at booking time
+- Show organizers a dashboard with registration and revenue numbers
+- Show check-in reports and export attendee details as CSV
+- Check people in by scanning a QR code or searching manually
+- Block duplicate check-ins
+
+## DocTypes
+
+The backend is built around five DocTypes.
 
 ### 1. Managed Event
 
-Stores the main event information.
+The main event record.
 
-- Event title and description
+- Title and description
 - Venue
-- Start date and time
-- End date and time
+- Start and end date/time
 - Registration deadline
 - Event status
-- Organizer information
+- Organizer
 
 ### 2. Event Ticket Type
 
-Stores the different ticket options available for an event.
+The ticket options for an event. An event can have as many ticket types as you like.
 
-- Ticket name
+- Ticket name and description
 - Linked event
-- Ticket description
-- Ticket price
-- Ticket capacity
-
-Organizers can create different ticket types for the same event.
+- Price
+- Capacity
 
 ### 3. Event Add-on
 
-Stores optional products or services that attendees can select during registration.
+Optional extras attendees can pick while booking.
 
-- Add-on name
+- Add-on name and description
 - Linked event
-- Description
-- Add-on price
+- Price
 - Available stock
 
 ### 4. Event Registration
 
-Stores the attendee's booking information.
+One record per booking.
 
 - Attendee details
-- Linked event
-- Selected ticket type
-- Ticket price
-- Add-on amount
-- Total amount
-- Payment status
-- Registration status
+- Linked event and selected ticket type
+- Ticket price, add-on amount and total amount
+- Payment status and registration status
 - QR code token
 - Check-in information
 
-Each registration has its own QR code token, which is used for ticket verification and check-in.
+Each registration gets its own QR token, which is what gets verified at the gate.
 
 ### 5. Event Registration Add-on
 
-A child table inside Event Registration.
-
-It stores the add-ons selected by an attendee, including their details and amounts.
+A child table inside Event Registration. It holds the add-ons the attendee picked, along with their details and amounts.
 
 ## Frontend Pages
 
-The Vue frontend is served under `/event_management`.
+The Vue app is served under `/event_management`.
 
-### Attendee Pages
+### Attendee pages
 
-| Page | Route | Purpose |
+| Page | Route | What it's for |
 |---|---|---|
-| Register | `/event_management/register` | Enter attendee name, email, and phone number |
+| Register | `/event_management/register` | Enter name, email and phone number |
 | Events | `/event_management/events` | Browse published events |
-| Event Details | `/event_management/event/:name` | View event details, tickets, and add-ons |
-| Book a Ticket | `/event_management/book-ticket/:name` | Select a ticket and add-ons and complete registration |
-| My Registrations | `/event_management/my-registrations` | View registrations and manage eligible bookings |
-| Ticket | `/event_management/ticket/:name` | View, print, or download the QR ticket |
+| Event Details | `/event_management/event/:name` | See event info, tickets and add-ons |
+| Book a Ticket | `/event_management/book-ticket/:name` | Choose a ticket and add-ons, then register |
+| My Registrations | `/event_management/my-registrations` | View and manage your bookings |
+| Ticket | `/event_management/ticket/:name` | View, print or download the QR ticket |
 
-### Organizer and Gate Staff Pages
+### Organizer and gate staff pages
 
-| Page | Route | Purpose |
+| Page | Route | What it's for |
 |---|---|---|
-| Organizer Dashboard | `/event_management/dashboard` | View event totals, registrations, revenue, and monthly trends |
-| Check-in Report | `/event_management/checkin-report` | View attendance information and export CSV reports |
-| Gate Scanner | `/event_management/gate-scanner` | Scan QR tickets and check in attendees |
+| Organizer Dashboard | `/event_management/dashboard` | Totals, registrations, revenue and monthly trends |
+| Check-in Report | `/event_management/checkin-report` | Attendance details and CSV export |
+| Gate Scanner | `/event_management/gate-scanner` | Scan QR tickets and check people in |
 
-The organizer dashboard and check-in report require a Frappe login. Dashboard data is limited to events assigned to the logged-in organizer.
+The dashboard and check-in report need a Frappe login, and the dashboard only shows events assigned to the logged-in organizer. The gate scanner needs the **Gate Staff** role.
 
-The gate scanner requires the **Gate Staff** role.
+## How attendee access works
 
-## Attendee Registration and Access
+Attendees give their name, email and phone number before booking. The app then stores an attendee profile, attendee ID, email and a signed access token in the browser.
 
-Attendees enter their name, email address, and phone number before booking an event.
-
-The application saves an attendee profile, attendee ID, email address, and signed access token in the browser.
-
-The **My Registrations** page uses the saved attendee ID and token to retrieve registrations. Attendees do not need a Frappe login for this flow.
-
-The backend verifies the token and retrieves registrations linked to the attendee profile. The frontend also checks the email against the saved email address.
-
-There is a separate access flow for users logged in to Frappe. In that case, registrations are retrieved by matching the logged-in account email with the attendee email.
-
-## Booking and Check-in Flow
-
-1. The organizer creates an event in Frappe Desk.
-2. Ticket types and optional add-ons are configured for the event.
-3. The attendee browses published events.
-4. The attendee selects a ticket and any optional add-ons.
-5. The system checks ticket capacity and add-on stock.
-6. The registration is created and the total amount is calculated.
-7. A unique QR code is generated for the registration.
-8. The attendee can access their ticket from My Registrations.
-9. Gate staff scan the QR code or search for the registration.
-10. The system verifies the ticket and prevents duplicate check-ins.
-
-Attendees can cancel eligible registrations before the event starts, provided they have not already checked in.
-
-## Payment Status
-
-The Event Registration DocType includes a payment status field to track payment information.
-
-**Razorpay payment integration is not implemented yet.** Online payment processing and payment verification are still pending.
-
-## Technology Stack
-
-**Backend**
-- Frappe Framework v16
-- Python
-- MariaDB
-
-**Frontend**
-- Vue 3
-- TypeScript
-- Vite
-- Frappe UI
-
-**Other**
-- `html5-qrcode` for QR code scanning
-- Git and GitHub
-
-## Installation
-
-A working Frappe Bench v16 environment is required.
-
-From your bench directory, run:
-
-```bash
-bench get-app https://github.com/muskaan-korecent/event_management.git --branch version-16
-
-bench --site your-site-name install-app event_management
-```
-
-Replace `your-site-name` with your actual Frappe site name.
-
-## Run Locally
-
-Install the frontend dependencies:
-
-```bash
-cd apps/event_management/frontend
-npm install
-```
-
-Go back to your bench directory:
-
-```bash
-cd ../..
-```
-
-Start the development server:
-
-```bash
-bench start
-```
-
-The frontend is available under:
-
-`/event_management`
-
-To run the Vite development server separately:
-
-```bash
-cd apps/event_management/frontend
-npm run dev
-```
-
-## Running Tests
-
-From your bench directory, run:
-
-```bash
-bench --site your-site-name run-tests --app event_management
-```
-
-## License
-
-MIT License. See [license.txt](license.txt).
+My Registrations uses that saved ID and token to fetch bookings, so attendees don't need a Frappe account. The backend verifies the token and returns the registrations linked to that attendee profile, and
